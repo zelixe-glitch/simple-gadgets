@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simple Gadgets — Магазин консолей, игр и геймпадов | Ростов-на-Дону</title>
+  <style>
+    :root {
+      --primary: #00acc1;
+      --dark: #00838f;
+      --accent: #00e5ff;
+      --bg: #f4f6f9;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }
+    body { background: var(--bg); color: var(--text); line-height: 1.45; }
+    .container { max-width: 1240px; margin: 0 auto; padding: 0 16px; }
+
+    /* Верхняя панель с контактами и графиком */
+    .top-bar { background: #0f172a; color: #cbd5e1; font-size: 13px; padding: 8px 0; border-bottom: 1px solid #1e293b; }
+    .top-bar .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+    .top-left { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+    .city-pin { color: var(--accent); font-weight: 700; }
+    .top-contacts { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .top-phone { color: #fff; font-weight: 700; text-decoration: none; font-size: 13px; }
+    .top-phone:hover { color: var(--accent); }
+    .msg-pill { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 6px; font-size: 12px; font-weight: 700; text-decoration: none; color: #fff; transition: 0.15s; }
+    .msg-tg { background: #0284c7; }
+    .msg-tg:hover { background: #0369a1; }
+    .msg-wa { background: #16a34a; }
+    .msg-wa:hover { background: #15803d; }
+
+    /* Шапка сайта */
+    header { background: #fff; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05); }
+    .header-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 76px; }
+    .logo-wrap { display: flex; align-items: center; gap: 11px; text-decoration: none; color: #0b191e; flex-shrink: 0; cursor: pointer; }
+    .logo-img { height: 48px; width: 80px; object-fit: cover; border-radius: 9px; border: 1.5px solid var(--primary); background: #0a1418; }
+    .logo-text strong { display: block; font-size: 20px; font-weight: 800; line-height: 1.1; }
+    .logo-text span { font-size: 12px; color: var(--dark); font-weight: 600; }
+
+    /* Контрастный поиск с лупой */
+    .search-box { flex: 1; max-width: 540px; display: flex; align-items: center; border: 2px solid var(--primary); border-radius: 11px; overflow: hidden; background: #f8fafc; transition: 0.2s; }
+    .search-box:focus-within { background: #fff; box-shadow: 0 0 0 3px rgba(0, 172, 193, 0.18); }
+    .search-icon { padding-left: 13px; color: var(--dark); display: flex; align-items: center; }
+    .search-box input { flex: 1; border: none; background: transparent; padding: 10px 12px; font-size: 14px; outline: none; color: #0f172a; }
+    .search-box button { background: var(--primary); color: #fff; border: none; padding: 11px 18px; font-weight: 700; cursor: pointer; font-size: 14px; transition: 0.15s; }
+    .search-box button:hover { background: var(--dark); }
+
+    /* Избранное и акцентная Корзина с тенью */
+    .header-actions { display: flex; align-items: center; gap: 10px; }
+    .icon-btn { background: #f1f5f9; border: 1px solid var(--border); padding: 10px 14px; border-radius: 11px; font-size: 14px; font-weight: 700; cursor: pointer; color: #1e293b; transition: 0.15s; }
+    .icon-btn:hover, .icon-btn.active { background: #e0f7fa; border-color: var(--primary); color: var(--dark); }
+    .cart-btn { background: linear-gradient(135deg, #00acc1, #00838f); color: #fff; border: none; padding: 10px 18px; border-radius: 11px; font-size: 14px; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(0, 172, 193, 0.35); transition: 0.2s; }
+    .cart-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(0, 172, 193, 0.45); background: linear-gradient(135deg, #00bcd4, #006064); }
+    .badge-cnt { background: var(--accent); color: #081c20; font-weight: 900; padding: 2px 7px; border-radius: 12px; font-size: 12px; }
+    /* Карточка магазина Simple Gadgets */
+    .seller-banner { margin: 18px 0; background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 18px 22px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03); }
+    .seller-left { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+    .seller-avatar { width: 68px; height: 68px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); background: #0a1418; }
+    .seller-info h1 { font-size: 22px; font-weight: 800; margin-bottom: 3px; }
+    .seller-rating { display: flex; align-items: center; gap: 8px; font-size: 13px; margin-bottom: 6px; flex-wrap: wrap; color: #334155; }
+    .stars { color: #f59e0b; font-weight: 800; }
+    .seller-badges { display: flex; gap: 6px; flex-wrap: wrap; }
+    .s-badge { background: #e0f7fa; color: var(--dark); font-size: 12px; font-weight: 700; padding: 4px 9px; border-radius: 6px; }
+    .promo-box { background: linear-gradient(120deg, #0b252b, #00838f); color: #fff; padding: 14px 18px; border-radius: 12px; max-width: 340px; }
+    .promo-box span { background: var(--accent); color: #081c20; font-size: 11px; font-weight: 800; padding: 2px 7px; border-radius: 4px; text-transform: uppercase; }
+    .promo-box p { font-size: 14px; font-weight: 700; margin-top: 6px; }
+
+    /* Фильтры и сортировка */
+    .toolbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 18px; }
+    .filters { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+    .filters::-webkit-scrollbar { display: none; }
+    .filter-btn { background: #fff; border: 1px solid var(--border); padding: 8px 14px; border-radius: 9px; font-size: 13px; font-weight: 700; cursor: pointer; transition: 0.15s; white-space: nowrap; flex-shrink: 0; }
+    .filter-btn:hover { border-color: var(--primary); color: var(--dark); }
+    .filter-btn.active { background: #0f172a; color: #fff; border-color: #0f172a; }
+    .sort-select { padding: 8px 12px; border: 1px solid var(--border); border-radius: 9px; background: #fff; font-size: 13px; font-weight: 700; outline: none; cursor: pointer; flex-shrink: 0; }
+
+    /* Сетка карточек с выровненной высотой заголовков и крупной ценой */
+    .shop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 18px; margin-bottom: 44px; }
+    .shop-card { background: #fff; border-radius: 14px; overflow: hidden; border: 1px solid var(--border); display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease; }
+    .shop-card:hover { transform: translateY(-5px); box-shadow: 0 12px 26px rgba(0, 172, 193, 0.18); border-color: var(--primary); }
+
+    .photo-wrap { position: relative; width: 100%; aspect-ratio: 4 / 3; background: #eef2f6; overflow: hidden; }
+    .photo-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s ease; }
+    .shop-card:hover .photo-wrap img { transform: scale(1.04); }
+    .store-garant { position: absolute; bottom: 8px; left: 8px; background: rgba(15, 23, 42, 0.86); color: #fff; font-size: 11px; font-weight: 700; padding: 4px 9px; border-radius: 6px; backdrop-filter: blur(4px); }
+
+    .card-body { padding: 14px 15px 15px; display: flex; flex-direction: column; flex: 1; justify-content: space-between; }
+    .title-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 6px; margin-bottom: 8px; height: 42px; }
+    .card-title { font-size: 15px; font-weight: 700; color: #0f172a; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .shop-card:hover .card-title { color: var(--dark); }
+    .fav-btn { background: none; border: none; font-size: 21px; line-height: 1; cursor: pointer; color: #94a3b8; padding: 0 2px; flex-shrink: 0; transition: 0.15s; }
+    .fav-btn:hover, .fav-btn.active { color: #ef4444; transform: scale(1.1); }
+
+    .card-price { font-size: 22px; font-weight: 900; color: #000; letter-spacing: -0.3px; margin-bottom: 4px; }
+    .card-meta { font-size: 12px; color: var(--muted); line-height: 1.4; margin-bottom: 12px; }
+    .btn-buy { width: 100%; background: var(--primary); color: #fff; border: none; padding: 10px 14px; border-radius: 9px; font-size: 14px; font-weight: 800; cursor: pointer; transition: background 0.18s ease, transform 0.12s ease; box-shadow: 0 2px 8px rgba(0, 172, 193, 0.25); }
+    .btn-buy:hover { background: var(--dark); }
+    .btn-buy:active { transform: scale(0.98); }
+
+    /* ОТДЕЛЬНАЯ СТРАНИЦА ТОВАРА */
+    .product-page { display: none; padding: 20px 0 48px; }
+    .product-page.active { display: block; }
+    .breadcrumbs { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; font-size: 13px; color: var(--muted); }
+    .back-btn { background: #fff; border: 1px solid var(--border); padding: 8px 14px; border-radius: 9px; font-size: 14px; font-weight: 700; color: #0f172a; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: 0.15s; }
+    .back-btn:hover { border-color: var(--primary); color: var(--dark); background: #e0f7fa; }
+    .pp-card { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 24px; box-shadow: 0 4px 16px rgba(0,0,0,0.03); }
+    .pp-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 28px; align-items: start; }
+    .pp-gallery { width: 100%; aspect-ratio: 4 / 3; background: #0f172a; border-radius: 14px; overflow: hidden; border: 1px solid var(--border); }
+    .pp-gallery img { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .pp-right h1 { font-size: 24px; font-weight: 800; line-height: 1.25; margin-bottom: 10px; }
+    .pp-price { font-size: 32px; font-weight: 900; margin-bottom: 14px; color: #000; }
+    .pp-delivery { background: #f0f9fa; border: 1px solid #bae6fd; border-radius: 12px; padding: 12px 14px; font-size: 14px; margin-bottom: 16px; }
+    .pp-actions { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
+    .btn-primary-lg { background: linear-gradient(135deg, #00acc1, #00838f); color: #fff; border: none; padding: 14px 18px; border-radius: 11px; font-size: 15px; font-weight: 800; cursor: pointer; text-align: center; text-decoration: none; box-shadow: 0 4px 12px rgba(0, 172, 193, 0.28); transition: 0.2s; }
+    .btn-primary-lg:hover { background: linear-gradient(135deg, #00bcd4, #006064); transform: translateY(-1px); }
+    .pp-msg-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .btn-msg-lg { padding: 11px 12px; border-radius: 10px; font-size: 14px; font-weight: 700; text-align: center; text-decoration: none; color: #fff; transition: 0.15s; }
+    .pp-seller { display: flex; align-items: center; gap: 12px; padding-top: 14px; border-top: 1px solid var(--border); font-size: 14px; }
+    .pp-seller img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 1.5px solid var(--primary); }
+
+    .pp-details { margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--border); display: grid; grid-template-columns: 1.2fr 1fr; gap: 28px; }
+    .pp-section-title { font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+    .bio-text { font-size: 15px; color: #1e293b; white-space: pre-line; line-height: 1.6; }
+    .specs-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .specs-table td { padding: 9px 4px; border-bottom: 1px dashed var(--border); }
+    .specs-table td:first-child { color: var(--muted); width: 44%; }
+
+    .overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.62); display: none; align-items: center; justify-content: center; z-index: 200; padding: 16px; }
+    .overlay.open { display: flex; }
+    .modal { background: #fff; border-radius: 16px; max-width: 520px; width: 100%; max-height: 92vh; overflow-y: auto; padding: 24px; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.25); }
+    .close-btn { position: absolute; top: 14px; right: 14px; width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--border); background: #f8fafc; font-size: 20px; cursor: pointer; }
+    .cart-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+    .qty-btn { width: 28px; height: 28px; border: 1px solid var(--border); background: #f8fafc; border-radius: 6px; font-weight: 700; cursor: pointer; }
+    .summary { background: #f8fafc; padding: 12px; border-radius: 10px; margin-top: 12px; font-size: 14px; }
+    .summary div { display: flex; justify-content: space-between; margin-bottom: 5px; }
+    .summary .total { font-size: 18px; font-weight: 800; border-top: 1px solid var(--border); padding-top: 8px; margin-top: 6px; }
+    .form-col { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+    .form-col input, .form-col select { padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; }
+
+    footer { background: #0f172a; color: #94a3b8; padding: 24px 0; font-size: 13px; }
+    footer .container { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; align-items: center; }
+    footer a { color: var(--accent); text-decoration: none; font-weight: 600; }
+
+    @media (max-width: 760px) {
+      .pp-grid, .pp-details { grid-template-columns: 1fr; }
+      .header-inner { height: auto; padding: 10px 0; flex-wrap: wrap; }
+      .search-box { order: 3; max-width: 100%; width: 100%; }
+      .toolbar { flex-direction: column; align-items: stretch; }
+      .sort-select { align-self: flex-end; }
+    }
+    @media (max-width: 580px) {
+      .shop-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+      .card-body { padding: 10px; }
+      .title-row { height: 38px; margin-bottom: 6px; }
+      .card-title { font-size: 13px; }
+      .card-price { font-size: 17px; }
+      .card-meta { font-size: 11px; margin-bottom: 8px; }
+      .btn-buy { padding: 8px; font-size: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="top-bar">
+    <div class="container">
+      <div class="top-left">
+        <span class="city-pin">📍 Ростов-на-Дону</span>
+        <span>🕒 Ежедневно 10:00 – 21:00</span>
+        <span>🚚 Доставка по всей России от 1 дня</span>
+      </div>
+      <div class="top-contacts">
+        <a href="tel:+79000000000" class="top-phone">📞 +7 (900) 000-00-00</a>
+        <a href="https://t.me" target="_blank" rel="noopener" class="msg-pill msg-tg">Telegram</a>
+        <a href="https://wa.me" target="_blank" rel="noopener" class="msg-pill msg-wa">WhatsApp</a>
+      </div>
+    </div>
+  </div>
+
+  <header>
+    <div class="container header-inner">
+      <div class="logo-wrap" onclick="showCatalog()">
+        <img src="logo.jpg" alt="Simple Gadgets" class="logo-img" />
+        <div class="logo-text">
+          <strong>Simple Gadgets</strong>
+          <span>Магазин консолей и игр</span>
+        </div>
+      </div>
+
+      <div class="search-box">
+        <span class="search-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </span>
+        <input type="text" id="searchInput" placeholder="Поиск: Switch OLED, PS4 HEN, DualSense, Valhalla..." />
+        <button onclick="showCatalog(); renderCatalog();">Найти</button>
+      </div>
+
+      <div class="header-actions">
+        <button class="icon-btn" id="favFilterBtn" title="Избранное">♡ <span id="favCount">0</span></button>
+        <button class="cart-btn" id="openCartBtn">🛒 Корзина <span class="badge-cnt" id="cartCount">0</span></button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" id="catalogView">
+    <section class="seller-banner">
+      <div class="seller-left">
+        <img src="logo.jpg" alt="Simple Gadgets" class="seller-avatar" />
+        <div class="seller-info">
+          <h1>Simple Gadgets</h1>
+          <div class="seller-rating">
+            <span class="stars">5,0 ★★★★★</span>
+            <span>372 отзыва покупателей</span>
+            <span>• Работаем с 2021 года</span>
+          </div>
+          <div class="seller-badges">
+            <span class="s-badge">✓ Гарантия магазина</span>
+            <span class="s-badge">✓ Проверенный продавец</span>
+            <span class="s-badge">🚚 Доставка по всей России</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="promo-box">
+        <span>Акция магазина</span>
+        <p>Скидка 5% при заказе от 2 товаров!</p>
+      </div>
+    </section>
+
+    <div class="toolbar">
+      <div class="filters" id="filterBar">
+        <button class="filter-btn active" data-filter="all">Все товары (12)</button>
+        <button class="filter-btn" data-filter="nintendo">Nintendo Switch OLED (5)</button>
+        <button class="filter-btn" data-filter="ps4">PS4 Slim HEN (2)</button>
+        <button class="filter-btn" data-filter="ps5">Диски PS5 (4)</button>
+        <button class="filter-btn" data-filter="acc">Геймпады (1)</button>
+      </div>
+
+      <select class="sort-select" id="sortSelect" onchange="renderCatalog()">
+        <option value="default">По умолчанию</option>
+        <option value="asc">Сначала дешевле</option>
+        <option value="desc">Сначала дороже</option>
+      </select>
+    </div>
+
+    <div class="shop-grid" id="catalogGrid"></div>
+  </main>
+
+  <section class="container product-page" id="productView"></section>
+
+  <div class="overlay" id="cartOverlay">
+    <div class="modal">
+      <button class="close-btn" id="closeCartBtn">&times;</button>
+      <h2 style="margin-bottom:12px;">Корзина</h2>
+      <div id="cartItems"></div>
+      <div id="cartSummary"></div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <span>© 2026 Simple Gadgets — Магазин игровых консолей и игр • г. Ростов-на-Дону</span>
+      <div>
+        <a href="tel:+79000000000">+7 (900) 000-00-00</a> •
+        <a href="https://t.me" target="_blank" rel="noopener">Telegram</a> •
+        <a href="https://wa.me" target="_blank" rel="noopener">WhatsApp</a>
+      </div>
+    </div>
+  </footer>
+  <script>
+    const PRODUCTS = [
+      {
+        id: 1,
+        cat: "nintendo",
+        catLabel: "Nintendo Switch OLED",
+        img: "item1.jpg",
+        title: "Nintendo switch oled прошитая 512 гб (Neon)",
+        price: 37500,
+        city: "Ростов-на-Дону",
+        delivery: "Доставка по всей России от 1 дня",
+        bio: "Прошитая игровая консоль Nintendo Switch OLED с быстрой картой памяти SanDisk 512 ГБ.\n\n• Все игры бесплатно — установлен магазин для прямого скачивания игр по Wi-Fi.\n• Две системы на выбор: прошитая (Atmosphere) и официальная.\n• Яркий 7-дюймовый OLED-экран, до 9 часов автономной работы.\n• Полная заводская комплектация в коробке, проверка при встрече в Ростове-на-Дону и гарантия магазина Simple Gadgets.",
+        specs: [
+          ["Тип", "Портативная игровая консоль"],
+          ["Экран", "7\" OLED (1280×720)"],
+          ["Память", "64 ГБ + карта 512 ГБ"],
+          ["Цвет Joy-Con", "Neon (синий / красный)"],
+          ["Прошивка", "Чипованная (все игры бесплатно)"],
+          ["Комплектация", "Полная в коробке"]
+        ]
+      },
+      {
+        id: 2,
+        cat: "ps4",
+        catLabel: "PS4 Slim HEN",
+        img: "item2.jpg",
+        title: "Ps4 Slim 1tb HEN прошитая с играми",
+        price: 26500,
+        city: "Ростов-на-Дону",
+        delivery: "Доставка по всей России от 1 дня",
+        bio: "Игровая приставка PlayStation 4 Slim с жёстким диском на 1 ТБ и прошивкой HEN.\n\n• Все игры бесплатно — на диск уже закачаны топовые хиты, можно легко ставить любые новые.\n• Работает тихо, не греется, полностью обслужена и проверена специалистами Simple Gadgets.\n• Поддержка Full HD 1080p и HDR для плавного геймплея.\n• В комплекте беспроводной геймпад DualShock 4 и все необходимые кабели.",
+        specs: [
+          ["Модель", "Sony PlayStation 4 Slim"],
+          ["Процессор", "8-ядерный AMD Jaguar"],
+          ["Оперативная память", "8 ГБ GDDR5"],
+          ["Накопитель", "1 ТБ (1000 ГБ)"],
+          ["Прошивка", "HEN + предустановленные игры"],
+          ["Видеовыход", "Full HD 1080p, HDR"]
+        ]
+      },
+      {
+        id: 3,
+        cat: "nintendo",
+        catLabel: "Nintendo Switch OLED",
+        img: "item3.jpg",
+        title: "Nintendo switch Oled (прошит, 256 гб, Neon)",
+        price: 35500,
+        city: "Ростов-на-Дону",
+        delivery: "Доставка по всей России от 1 дня",
+        bio: "Прошитая Nintendo Switch OLED в расцветке Neon с картой SanDisk Ultra 256 ГБ.\n\n• Полностью настроена и готова к игре прямо из коробки.\n• Помещается 25–35 крупных игр, скачивание новых доступно прямо на консоли.\n• Качественная сборка и официальная гарантия магазина Simple Gadgets.",
+        specs: [
+          ["Тип", "Портативная игровая консоль"],
+          ["Экран", "7\" OLED (1280×720)"],
+          ["Память", "64 ГБ + карта SanDisk 256 ГБ"],
+          ["Цвет Joy-Con", "Neon (синий / красный)"],
+          ["Прошивка", "Чипованная + магазин игр"]
+        ]
+      },
+      {
+        id: 4,
+        cat: "ps5",
+        catLabel: "Диски PS5",
+        img: "item4.jpg",
+        title: "Saints Row ps5 (как новый)",
+        price: 1100,
+        city: "Ростов-на-Дону",
+        delivery: "Доставка по всей России от 1 дня",
+        bio: "Лицензионный диск Saints Row (Day One Edition) для PlayStation 5 в состоянии нового.\n\n• Коробка и сам диск без царапин и следов использования.\n• Отличный вариант дополнить заказ до 2 товаров и получить скидку 5% на всю корзину!",
+        specs: [
+          ["Платформа", "PlayStation 5"],
+          ["Издание", "Day One Edition (18+)"],
+          ["Жанр", "Экшен / Открытый мир"],
+          ["Состояние", "Как новый"],
+          ["Акция", "Скидка 5% при покупке от 2 товаров"]
+        ]
+      },
+      {
+        id: 5,
+        cat: "ps4",
+        catLabel: "PS4 Slim HEN",
+        img: "item5.jpg",
+        title: "Ps4 slim 500 гб HEN прошитая с играми",
+        price: 24500,
+        city: "Ростов-на-Дону",
+        delivery: "Доставка по всей России от 1 дня",
+        bio: "Компактная PlayStation 4 Slim с накопителем 500 ГБ и прошивкой HEN.\n\n• Все игры бесплатно — установлена подборка лучших эксклюзивов и хитов.\n• Приставка в отличном техническом и внешнем состоянии.\n• Полный комплект для подключения к ТВ, проверка перед покупкой и гарантия Simple Gadgets.",
+        specs: [
+          ["Модель", "Sony PlayStation 4 Slim"],
+          ["Процессор", "8-ядерный"],
+          ["Оперативная память", "8 ГБ GDDR5"],
+          ["Накопитель", "500 ГБ"],
+          ["Прошивка", "HEN + игры на диске"]
+        ]
+      },
+      {
+        id: 6,
+        cat: "ps5",
+        catLabel: "Диски PS5",
+        img: "item6.jpg",
+        title: "Spider man miles morales ps5 русский язык (новый)",
+        price: 2500,
+        city: "Ростов-на-Дону",
+        delivery: "Доставка по всей России от 1 дня",
+        bio: "Новый запечатанный диск Marvel's Spider-Man: Miles Morales для PlayStation 5.\n\n• Полная официальная локализация на русский язык.\n• Поддержка трассировки лучей, 60 FPS и адаптивных триггеров DualSense.\n• Участвует в акции: скидка 5% от 2 товаров.",
+        specs: [
+          ["Платформа", "PlayStation 5"],
+          ["Язык", "Русский (озвучка и субтитры)"],
+          ["Возраст", "16+"],
+          ["Состояние", "Новый (в заводской плёнке)"],
+          ["Акция", "Скидка 5% от 2 товаров"]
+        ]
+      },
+      {
+        id: 7,
+        cat: "nintendo",
+        catLabel: "Nintendo Switch OLED",
+        img: "item7.jpg",
+        title: "Nintendo switch oled (прошит, 256 гб, White)",
+        price: 35500,
+        city: "Ростов-на-Дону",
+        delivery: "Доставка по всей России от 1 дня",
+        bio: "Прошитая игровая консоль Nintendo Switch OLED в стильной белой расцветке (White) с картой SanDisk 256 ГБ.\n\n• Все игры бесплатно — скачивание любых игр напрямую с консоли.\n• Яркий 7\" OLED-экран, белая док-станция и белые Joy-Con.\n• Полная комплектация в коробке, проверка в Ростове-на-Дону или доставка по РФ.",
+        specs: [
+          ["Тип", "Портативная игровая консоль"],
+          ["Экран", "7\" OLED (1280×720)"],
+          ["Память", "64 ГБ + карта SanDisk 256 ГБ"],
+          ["Цвет Joy-Con", "White (белый)"],
+          ["Прошивка", "Чипованная + магазин игр"]
+        ]
+      },
+      {
+        id: 8,
+        cat: "ps5",
+        catLabel: "Диски PS5",
+        img: "item8.jpg",
+        title: "Gran turismo 7 ps5 (новый)",
+        price: 2800,
+        city: "Ростов-на-Дону",
+        delivery: "Доставка по всей России от 1 дня",
+        bio: "Новый запечатанный диск Gran Turismo 7 для PlayStation 5.\n\n• Культовый автосимулятор с фотореалистичной графикой и поддержкой тактильной отдачи DualSense.\n• Официальные русские субтитры.\n• Участвует в акции: скидка 5% при покупке от 2 товаров.",
+        specs: [
+          ["Платформа", "PlayStation 5"],
+          ["Жанр", "Автосимулятор / Гонки"],
+          ["Язык", "Русские субтитры"],
+          ["Состояние", "Новый (в заводской плёнке)"],
+          ["Акция", "Скидка 5% от 2 товаров"]
+        ]
+      },
+      {
+        id: 9,
+        cat: "ps5",
+        catLabel: "Диски PS5",
+        img: "item9.jpg",
+        title: "Assassins creed valhalla ps5 на русском (новый)",
+        price: 2500,
+        city: "Ростов-на-Дону",
+        delivery: "Доставка по всей России от 1 дня",
+        bio: "Новый запечатанный диск Assassin's Creed Valhalla для PlayStation 5 на русском языке.\n\n• Масштабная экшен-RPG про эпоху викингов в 4K 60 FPS с быстрыми загрузками на SSD PS5.\n• Полностью на русском языке.\n• Выгодно брать 2-м товаром ради скидки 5% на весь заказ!",
+        specs: [
+          ["Платформа", "PlayStation 5"],
+          ["Жанр", "Экшен / RPG"],
+          ["Язык", "Русский"],
+          ["Возраст", "18+"],
+          ["Состояние", "Новый (в заводской плёнке)"]
+        ]
+      },
+      {
+        id: 10,
+        cat: "nintendo",
+        catLabel: "Nintendo Switch OLED",
+        img: "item10.jpg",
+        title: "Nintendo switch oled прошитая 512 gb (White)",
+        price: 37500,
+        city: "Ростов-на-Дону",
+        delivery: "Доставка по всей России от 1 дня",
+        bio: "Максимальная комплектация Nintendo Switch OLED White с прошивкой и картой памяти 512 ГБ.\n\n• Вмещает до 60–70 игр одновременно.\n• Полностью настроена, работает скачивание игр по Wi-Fi.\n• Полный заводской комплект в коробке, гарантия магазина Simple Gadgets.",
+        specs: [
+          ["Тип", "Портативная игровая консоль"],
+          ["Экран", "7\" OLED (1280×720)"],
+          ["Память", "64 ГБ + карта 512 ГБ"],
+          ["Цвет Joy-Con", "White (белый)"],
+          ["Прошивка", "Чипованная (все игры бесплатно)"]
+        ]
+      },
+      {
+        id: 11,
+        cat: "nintendo",
+        catLabel: "Nintendo Switch OLED",
+        img: "item11.jpg",
+        title: "Nintendo switch прошитая с играми 512 гб",
+        price: 37500,
+        city: "Ростов-на-Дону",
+        delivery: "Доставка по всей России от 1 дня",
+        bio: "Прошитая Nintendo Switch с картой памяти 512 ГБ и установленной подборкой топовых игр.\n\n• Все игры бесплатно — можно качать любые релизы прямо на приставку.\n• Полный комплект в коробке, готова к игре сразу после покупки.",
+        specs: [
+          ["Тип", "Портативная игровая консоль"],
+          ["Память", "Карта 512 ГБ в комплекте"],
+          ["Прошивка", "Чипованная + предустановленные игры"],
+          ["Комплектация", "Полная в коробке"]
+        ]
+      },
+      {
+        id: 12,
+        cat: "acc",
+        catLabel: "Геймпады",
+        img: "item12.jpg",
+        title: "Геймпад dualsense ps5 новый",
+        price: 6500,
+        city: "Ростов-на-Дону",
+        delivery: "Доставка по всей России от 1 дня",
+        bio: "Новый оригинальный беспроводной геймпад Sony DualSense для PlayStation 5 (бело-чёрный).\n\n• В заводской запечатанной коробке.\n• Адаптивные триггеры, тактильная отдача, встроенный микрофон и разъём USB Type-C.\n• Идеальный второй товар в корзину — сразу активирует скидку 5%!",
+        specs: [
+          ["Тип", "Беспроводной геймпад"],
+          ["Совместимость", "PlayStation 5, ПК, смартфоны"],
+          ["Цвет", "White (белый / чёрный)"],
+          ["Состояние", "Новый в коробке"],
+          ["Акция", "Скидка 5% при покупке от 2 товаров"]
+        ]
+      }
+    ];
+    let activeFilter = "all";
+    let onlyFavs = false;
+    let cart = JSON.parse(localStorage.getItem("sg_cart_v4") || "[]");
+    let favs = JSON.parse(localStorage.getItem("sg_favs_v4") || "[]");
+
+    const catalogView = document.getElementById("catalogView");
+    const productView = document.getElementById("productView");
+    const grid = document.getElementById("catalogGrid");
+
+    function formatPrice(n) { return n.toLocaleString("ru-RU") + " ₽"; }
+
+    function updateCounters() {
+      localStorage.setItem("sg_cart_v4", JSON.stringify(cart));
+      localStorage.setItem("sg_favs_v4", JSON.stringify(favs));
+      document.getElementById("cartCount").textContent = cart.reduce((s, i) => s + i.qty, 0);
+      document.getElementById("favCount").textContent = favs.length;
+    }
+
+    function toggleFav(id, e) {
+      if (e) e.stopPropagation();
+      favs = favs.includes(id) ? favs.filter(x => x !== id) : [...favs, id];
+      updateCounters();
+      renderCatalog();
+    }
+
+    function addToCart(id, e) {
+      if (e) e.stopPropagation();
+      const found = cart.find(i => i.id === id);
+      if (found) found.qty += 1;
+      else cart.push({ id, qty: 1 });
+      updateCounters();
+    }
+
+    function showCatalog() {
+      productView.classList.remove("active");
+      productView.innerHTML = "";
+      catalogView.style.display = "block";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function openProduct(id) {
+      const p = PRODUCTS.find(x => x.id === id);
+      if (!p) return;
+
+      catalogView.style.display = "none";
+      productView.innerHTML = `
+        <div class="breadcrumbs">
+          <button class="back-btn" onclick="showCatalog()">← Назад в каталог</button>
+          <span>Главная / ${p.catLabel} / <b>${p.title}</b></span>
+        </div>
+
+        <div class="pp-card">
+          <div class="pp-grid">
+            <div class="pp-gallery">
+              <img src="${p.img}" alt="${p.title}" />
+            </div>
+
+            <div class="pp-right">
+              <h1>${p.title}</h1>
+              <div class="pp-price">${formatPrice(p.price)}</div>
+              <div class="pp-delivery">
+                🚚 <b>${p.delivery}</b> • ${p.city}<br>
+                🔥 Скидка <b>5%</b> при заказе от 2 товаров в корзине
+              </div>
+
+              <div class="pp-actions">
+                <button class="btn-primary-lg" onclick="addToCart(${p.id}); openCart();">Добавить в корзину</button>
+                <div class="pp-msg-row">
+                  <a href="https://t.me" target="_blank" rel="noopener" class="btn-msg-lg msg-tg">Написать в Telegram</a>
+                  <a href="https://wa.me" target="_blank" rel="noopener" class="btn-msg-lg msg-wa">Написать в WhatsApp</a>
+                </div>
+              </div>
+
+              <div class="pp-seller">
+                <img src="logo.jpg" alt="Simple Gadgets" />
+                <div>
+                  <b>Simple Gadgets</b><br>
+                  <span style="color:#f59e0b; font-weight:700;">5,0 ★</span> (372 отзыва) • Гарантия магазина
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pp-details">
+            <div>
+              <div class="pp-section-title">Описание</div>
+              <div class="bio-text">${p.bio}</div>
+            </div>
+
+            <div>
+              <div class="pp-section-title">Характеристики</div>
+              <table class="specs-table">
+                ${p.specs.map(([k, v]) => `<tr><td>${k}</td><td><b>${v}</b></td></tr>`).join("")}
+              </table>
+            </div>
+          </div>
+        </div>
+      `;
+      productView.classList.add("active");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function renderCatalog() {
+      const q = document.getElementById("searchInput").value.toLowerCase();
+      const sort = document.getElementById("sortSelect").value;
+
+      let list = PRODUCTS.filter(p => {
+        const matchCat = activeFilter === "all" || p.cat === activeFilter;
+        const matchQ = p.title.toLowerCase().includes(q);
+        const matchFav = !onlyFavs || favs.includes(p.id);
+        return matchCat && matchQ && matchFav;
+      });
+
+      if (sort === "asc") list.sort((a, b) => a.price - b.price);
+      if (sort === "desc") list.sort((a, b) => b.price - a.price);
+
+      if (!list.length) {
+        grid.innerHTML = `<p style="grid-column:1/-1; color:#64748b;">Товары не найдены.</p>`;
+        return;
+      }
+
+      grid.innerHTML = list.map(p => {
+        const isFav = favs.includes(p.id);
+        return `
+          <div class="shop-card" onclick="openProduct(${p.id})">
+            <div class="photo-wrap">
+              <img src="${p.img}" alt="${p.title}" />
+              <span class="store-garant">Гарантия магазина</span>
+            </div>
+            <div class="card-body">
+              <div>
+                <div class="title-row">
+                  <div class="card-title">${p.title}</div>
+                  <button class="fav-btn ${isFav ? "active" : ""}" onclick="toggleFav(${p.id}, event)" title="В избранное">${isFav ? "♥" : "♡"}</button>
+                </div>
+                <div class="card-price">${formatPrice(p.price)}</div>
+                <div class="card-meta">${p.delivery}<br>${p.city}</div>
+              </div>
+              <button class="btn-buy" onclick="addToCart(${p.id}, event)">В корзину</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function changeQty(id, d) {
+      const item = cart.find(i => i.id === id);
+      if (!item) return;
+      item.qty += d;
+      if (item.qty <= 0) cart = cart.filter(i => i.id !== id);
+      updateCounters(); renderCart();
+    }
+
+    function renderCart() {
+      const itemsEl = document.getElementById("cartItems");
+      const sumEl = document.getElementById("cartSummary");
+      if (!cart.length) {
+        itemsEl.innerHTML = `<p style="color:#64748b; padding:10px 0;">Корзина пока пуста.</p>`;
+        sumEl.innerHTML = "";
+        return;
+      }
+      let sub = 0, qty = 0;
+      itemsEl.innerHTML = cart.map(i => {
+        const p = PRODUCTS.find(x => x.id === i.id);
+        sub += p.price * i.qty; qty += i.qty;
+        return `<div class="cart-row"><div><b>${p.title}</b><div style="font-size:13px;color:#64748b;">${formatPrice(p.price)} × ${i.qty}</div></div><div><button class="qty-btn" onclick="changeQty(${p.id},-1)">-</button> <b style="margin:0 6px;">${i.qty}</b> <button class="qty-btn" onclick="changeQty(${p.id},1)">+</button></div></div>`;
+      }).join("");
+      const disc = qty >= 2 ? Math.round(sub * 0.05) : 0;
+      const total = sub - disc;
+      sumEl.innerHTML = `
+        <div class="summary">
+          <div><span>Товаров (${qty} шт.):</span><span>${formatPrice(sub)}</span></div>
+          <div style="color:#00838f; font-weight:700;"><span>${qty >= 2 ? "Скидка 5% (от 2 товаров):" : "Добавьте ещё 1 товар для скидки 5%:"}</span><span>${disc ? "-" + formatPrice(disc) : "0 ₽"}</span></div>
+          <div class="total"><span>Итого:</span><span>${formatPrice(total)}</span></div>
+        </div>
+        <form class="form-col" onsubmit="submitOrder(event, ${total})">
+          <input type="text" id="custName" placeholder="Ваше имя" required />
+          <input type="tel" id="custPhone" placeholder="Телефон или Telegram / WhatsApp" required />
+          <select id="custDeliv"><option>Самовывоз — Ростов-на-Дону</option><option>Доставка по всей России (СДЭК / Почта / Курьер)</option></select>
+          <button type="submit" class="btn-primary-lg" style="width:100%;">Оформить заказ</button>
+        </form>
+      `;
+    }
+
+    function openCart() {
+      renderCart();
+      document.getElementById("cartOverlay").classList.add("open");
+    }
+
+    function submitOrder(e, total) {
+      e.preventDefault();
+      alert(`Спасибо, ${document.getElementById("custName").value}! Заказ на ${formatPrice(total)} принят. Менеджер Simple Gadgets свяжется с вами в ближайшее время.`);
+      cart = []; updateCounters();
+      document.getElementById("cartOverlay").classList.remove("open");
+    }
+
+    document.getElementById("filterBar").onclick = e => {
+      if (!e.target.classList.contains("filter-btn")) return;
+      document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+      e.target.classList.add("active");
+      activeFilter = e.target.dataset.filter;
+      onlyFavs = false;
+      document.getElementById("favFilterBtn").classList.remove("active");
+      showCatalog();
+      renderCatalog();
+    };
+    document.getElementById("favFilterBtn").onclick = () => {
+      onlyFavs = !onlyFavs;
+      document.getElementById("favFilterBtn").classList.toggle("active", onlyFavs);
+      showCatalog();
+      renderCatalog();
+    };
+    document.getElementById("searchInput").oninput = () => { showCatalog(); renderCatalog(); };
+    document.getElementById("openCartBtn").onclick = openCart;
+    document.getElementById("closeCartBtn").onclick = () => document.getElementById("cartOverlay").classList.remove("open");
+    document.getElementById("cartOverlay").onclick = e => { if (e.target.id === "cartOverlay") document.getElementById("cartOverlay").classList.remove("open"); };
+
+    updateCounters();
+    renderCatalog();
+  </script>
+</body>
+</html>
